@@ -56,9 +56,15 @@ export async function POST(request: Request) {
     if (appointmentError) {
       console.error('Booking error:', appointmentError)
       if (appointmentError.code === '23505') { // Unique violation
-        return NextResponse.json({ error: 'Slot already booked. Please select another time.' }, { status: 409 })
+        // Check which constraint was violated to give a highly specific error
+        if (appointmentError.message.includes('prevent_double_booking')) {
+          return NextResponse.json({ error: 'This specific time slot is already booked with this dentist. Please choose a different time or date.' }, { status: 409 })
+        } else if (appointmentError.message.includes('booking_reference')) {
+          return NextResponse.json({ error: 'System error generating a unique reference number. Please try again.' }, { status: 409 })
+        }
+        return NextResponse.json({ error: 'Database constraint violation. Please try again.' }, { status: 409 })
       }
-      return NextResponse.json({ error: 'Failed to create reservation' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to create reservation: ' + appointmentError.message }, { status: 500 })
     }
 
     // Update patient profile if name is provided and they want to override
