@@ -16,6 +16,8 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
   const [dentistId, setDentistId] = useState('')
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
+  const [patientName, setPatientName] = useState('')
+  const [patientAge, setPatientAge] = useState('')
 
   const availableTimes = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30']
 
@@ -31,7 +33,9 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
           branch_id: branchId,
           dentist_id: dentistId,
           appointment_date: date,
-          appointment_time: time
+          appointment_time: time,
+          patient_name: patientName,
+          patient_age: patientAge
         })
       })
 
@@ -53,6 +57,35 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="patientName" className="text-sm font-medium">Patient Name</Label>
+          <Input 
+            type="text" 
+            id="patientName" 
+            placeholder="Name of the person visiting"
+            required 
+            value={patientName} 
+            onChange={e => setPatientName(e.target.value)} 
+            className="h-12 rounded-xl bg-secondary/30 border-border/60"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="patientAge" className="text-sm font-medium">Patient Age</Label>
+          <Input 
+            type="number" 
+            id="patientAge" 
+            placeholder="e.g., 25"
+            required 
+            min="1"
+            max="120"
+            value={patientAge} 
+            onChange={e => setPatientAge(e.target.value)} 
+            className="h-12 rounded-xl bg-secondary/30 border-border/60"
+          />
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="branch" className="text-sm font-medium">Clinic Branch</Label>
         <Select required value={branchId} onValueChange={(val) => setBranchId(val || '')}>

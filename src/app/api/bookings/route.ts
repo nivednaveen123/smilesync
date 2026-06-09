@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { dentist_id, branch_id, appointment_date, appointment_time } = body
+    const { dentist_id, branch_id, appointment_date, appointment_time, patient_name, patient_age } = body
 
     // Generate Booking Reference
     const booking_reference = `BK-${Date.now().toString().slice(-6)}`
@@ -44,6 +44,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to create reservation' }, { status: 500 })
     }
 
+    // Update patient profile if name is provided and they want to override
+    if (patient_name) {
+      await supabase
+        .from('patient_profiles')
+        .update({ full_name: patient_name })
+        .eq('id', user.id)
+    }
+
     // Trigger Self-Hosted n8n Webhooks for Communication
     try {
       const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL
@@ -53,7 +61,7 @@ export async function POST(request: Request) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             event: 'booking_confirmed', 
-            appointment 
+            appointment: { ...appointment, patient_name, patient_age }
           })
         })
       }
@@ -71,7 +79,8 @@ export async function POST(request: Request) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             booking_reference: appointment.booking_reference,
-            patient_name: appointment.patient_profiles.full_name,
+            patient_name: patient_name || appointment.patient_profiles.full_name,
+            patient_age: patient_age || 'Not specified',
             phone: appointment.patient_profiles.phone || '',
             email: appointment.patient_profiles.email || '',
             dentist: appointment.dentists.name,
