@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export async function POST(request: Request) {
   try {
@@ -13,8 +14,16 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { dentist_id, branch_id, appointment_date, appointment_time, patient_name, patient_age } = body
 
+    // To generate a globally unique booking reference, we MUST bypass RLS
+    // using the service role key, otherwise patients can only see their own appointments.
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false } }
+    )
+
     // Fetch the latest booking to generate sequential reference
-    const { data: lastBooking } = await supabase
+    const { data: lastBooking } = await supabaseAdmin
       .from('appointments')
       .select('booking_reference')
       .order('created_at', { ascending: false })
