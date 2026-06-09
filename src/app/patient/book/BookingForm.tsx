@@ -57,7 +57,10 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
         <Label htmlFor="branch" className="text-sm font-medium">Clinic Branch</Label>
         <Select required value={branchId} onValueChange={(val) => setBranchId(val || '')}>
           <SelectTrigger className="h-12 rounded-xl bg-secondary/30 border-border/60">
-            <SelectValue placeholder="Select a clinic location" />
+            {branchId 
+              ? <span>{branches.find(b => b.id === branchId)?.branch_name} — {branches.find(b => b.id === branchId)?.address}</span>
+              : <SelectValue placeholder="Select a clinic location" />
+            }
           </SelectTrigger>
           <SelectContent>
             {branches.map(b => (
@@ -71,7 +74,10 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
         <Label htmlFor="dentist" className="text-sm font-medium">Dentist</Label>
         <Select required value={dentistId} onValueChange={(val) => setDentistId(val || '')}>
           <SelectTrigger className="h-12 rounded-xl bg-secondary/30 border-border/60">
-            <SelectValue placeholder="Select a dentist" />
+            {dentistId
+              ? <span>Dr. {dentists.find(d => d.id === dentistId)?.name} ({dentists.find(d => d.id === dentistId)?.specialization})</span>
+              : <SelectValue placeholder="Select a dentist" />
+            }
           </SelectTrigger>
           <SelectContent>
             {dentists.map(d => (
@@ -98,7 +104,7 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
           <Label htmlFor="time" className="text-sm font-medium">Time</Label>
           <Select required value={time} onValueChange={(val) => setTime(val || '')}>
             <SelectTrigger className="h-12 rounded-xl bg-secondary/30 border-border/60">
-              <SelectValue placeholder="Select a time" />
+              {time ? <span>{time}</span> : <SelectValue placeholder="Select a time" />}
             </SelectTrigger>
             <SelectContent>
               {availableTimes.map(t => (
