@@ -13,8 +13,13 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { dentist_id, branch_id, appointment_date, appointment_time, patient_name, patient_age } = body
 
-    // Generate Booking Reference
-    const booking_reference = `BK-${Date.now().toString().slice(-6)}`
+    // Fetch count of appointments to generate sequential reference
+    const { count, error: countError } = await supabase
+      .from('appointments')
+      .select('*', { count: 'exact', head: true })
+
+    const nextNumber = (count || 0) + 1
+    const booking_reference = `BK-${String(nextNumber).padStart(3, '0')}`
 
     // Insert appointment directly as confirmed since we bypassed payments
     const { data: appointment, error: appointmentError } = await supabase
