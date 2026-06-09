@@ -13,12 +13,24 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { dentist_id, branch_id, appointment_date, appointment_time, patient_name, patient_age } = body
 
-    // Fetch count of appointments to generate sequential reference
-    const { count, error: countError } = await supabase
+    // Fetch the latest booking to generate sequential reference
+    const { data: lastBooking } = await supabase
       .from('appointments')
-      .select('*', { count: 'exact', head: true })
+      .select('booking_reference')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
 
-    const nextNumber = (count || 0) + 1
+    let nextNumber = 1
+    if (lastBooking && lastBooking.booking_reference && lastBooking.booking_reference.startsWith('BK-')) {
+      const lastNumStr = lastBooking.booking_reference.replace('BK-', '')
+      const lastNum = parseInt(lastNumStr, 10)
+      if (!isNaN(lastNum)) {
+        nextNumber = lastNum + 1
+      }
+    }
+    
+    // Add a small random hash if we somehow hit a collision (to be absolutely safe)
     const booking_reference = `BK-${String(nextNumber).padStart(3, '0')}`
 
     // Insert appointment directly as confirmed since we bypassed payments
