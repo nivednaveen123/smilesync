@@ -1,5 +1,4 @@
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 
 -- Enum for roles
 CREATE TYPE public.user_role AS ENUM ('PATIENT', 'DENTIST', 'ADMIN');
@@ -26,7 +25,7 @@ CREATE TABLE public.dentists (
 
 -- Clinic Branches
 CREATE TABLE public.clinic_branches (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     branch_name TEXT NOT NULL,
     address TEXT,
     phone TEXT,
@@ -35,7 +34,7 @@ CREATE TABLE public.clinic_branches (
 
 -- Appointments
 CREATE TABLE public.appointments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     patient_id UUID REFERENCES public.patient_profiles(id) ON DELETE CASCADE NOT NULL,
     dentist_id UUID REFERENCES public.dentists(id) ON DELETE CASCADE NOT NULL,
     branch_id UUID REFERENCES public.clinic_branches(id) ON DELETE CASCADE NOT NULL,
@@ -51,7 +50,7 @@ CREATE TABLE public.appointments (
 
 -- Payments
 CREATE TABLE public.payments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     appointment_id UUID REFERENCES public.appointments(id) ON DELETE CASCADE NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     payment_gateway TEXT NOT NULL,
@@ -62,7 +61,7 @@ CREATE TABLE public.payments (
 
 -- Medical Notes
 CREATE TABLE public.medical_notes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     appointment_id UUID REFERENCES public.appointments(id) ON DELETE CASCADE NOT NULL,
     dentist_id UUID REFERENCES public.dentists(id) ON DELETE CASCADE NOT NULL,
     note TEXT NOT NULL,
@@ -71,7 +70,7 @@ CREATE TABLE public.medical_notes (
 
 -- Audit Logs
 CREATE TABLE public.audit_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID, -- Optional, can be null for system actions
     action TEXT NOT NULL,
     entity TEXT NOT NULL,
@@ -82,7 +81,7 @@ CREATE TABLE public.audit_logs (
 
 -- Notifications
 CREATE TABLE public.notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     patient_id UUID REFERENCES public.patient_profiles(id) ON DELETE CASCADE NOT NULL,
     type TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending',
