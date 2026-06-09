@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import { Loader2, CheckCircle2 } from 'lucide-react'
 
 export default function BookingForm({ dentists, branches }: { dentists: any[], branches: any[] }) {
   const router = useRouter()
@@ -53,23 +54,23 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="branch">Clinic Branch</Label>
+        <Label htmlFor="branch" className="text-sm font-medium">Clinic Branch</Label>
         <Select required value={branchId} onValueChange={(val) => setBranchId(val || '')}>
-          <SelectTrigger>
+          <SelectTrigger className="h-12 rounded-xl bg-secondary/30 border-border/60">
             <SelectValue placeholder="Select a clinic location" />
           </SelectTrigger>
           <SelectContent>
             {branches.map(b => (
-              <SelectItem key={b.id} value={b.id}>{b.branch_name} - {b.address}</SelectItem>
+              <SelectItem key={b.id} value={b.id}>{b.branch_name} — {b.address}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="dentist">Dentist</Label>
+        <Label htmlFor="dentist" className="text-sm font-medium">Dentist</Label>
         <Select required value={dentistId} onValueChange={(val) => setDentistId(val || '')}>
-          <SelectTrigger>
+          <SelectTrigger className="h-12 rounded-xl bg-secondary/30 border-border/60">
             <SelectValue placeholder="Select a dentist" />
           </SelectTrigger>
           <SelectContent>
@@ -82,7 +83,7 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="date">Date</Label>
+          <Label htmlFor="date" className="text-sm font-medium">Date</Label>
           <Input 
             type="date" 
             id="date" 
@@ -90,12 +91,13 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
             min={new Date().toISOString().split('T')[0]} 
             value={date} 
             onChange={e => setDate(e.target.value)} 
+            className="h-12 rounded-xl bg-secondary/30 border-border/60"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="time">Time</Label>
+          <Label htmlFor="time" className="text-sm font-medium">Time</Label>
           <Select required value={time} onValueChange={(val) => setTime(val || '')}>
-            <SelectTrigger>
+            <SelectTrigger className="h-12 rounded-xl bg-secondary/30 border-border/60">
               <SelectValue placeholder="Select a time" />
             </SelectTrigger>
             <SelectContent>
@@ -107,8 +109,22 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
         </div>
       </div>
 
-      <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700" disabled={loading}>
-        {loading ? 'Confirming...' : 'Confirm Booking'}
+      <Button 
+        type="submit" 
+        className="w-full h-12 rounded-xl bg-gradient-to-r from-primary to-primary/85 hover:from-primary/90 hover:to-primary/75 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-300 font-semibold text-base" 
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Confirming...
+          </>
+        ) : (
+          <>
+            <CheckCircle2 className="mr-2 h-4 w-4" />
+            Confirm Booking
+          </>
+        )}
       </Button>
     </form>
   )

@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
-import { Calendar, User, History, Settings, LogOut } from 'lucide-react'
+import { Calendar, User, History, Settings, LogOut, Sparkles, CreditCard } from 'lucide-react'
 
 export default async function PatientLayout({
   children,
@@ -18,39 +17,56 @@ export default async function PatientLayout({
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] bg-slate-50">
+    <div className="flex min-h-[calc(100vh-4rem)]">
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-white p-6 hidden md:block">
-        <nav className="space-y-2">
-          <Link href="/patient" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-teal-50 text-teal-700 font-medium">
-            <Calendar className="h-5 w-5" />
-            <span>Dashboard</span>
-          </Link>
-          <Link href="/patient/history" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <History className="h-5 w-5" />
-            <span>History</span>
-          </Link>
-          <Link href="/patient/profile" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <User className="h-5 w-5" />
-            <span>Profile</span>
-          </Link>
-          <Link href="/patient/settings" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <Settings className="h-5 w-5" />
-            <span>Settings</span>
-          </Link>
-          <form action={logout}>
-            <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors mt-8">
-              <LogOut className="h-5 w-5" />
-              <span>Log Out</span>
-            </button>
-          </form>
+      <aside className="w-72 bg-sidebar text-sidebar-foreground p-6 hidden md:flex md:flex-col border-r border-sidebar-border">
+        <div className="flex items-center gap-2.5 px-3 mb-10">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <span className="font-bold text-sm text-sidebar-accent-foreground">Patient Portal</span>
+          </div>
+        </div>
+
+        <nav className="flex-1 space-y-1">
+          <SidebarLink href="/patient" icon={<Calendar className="h-4.5 w-4.5" />} label="Dashboard" active />
+          <SidebarLink href="/patient/history" icon={<History className="h-4.5 w-4.5" />} label="History" />
+          <SidebarLink href="/patient/payments" icon={<CreditCard className="h-4.5 w-4.5" />} label="Payments" />
+          <SidebarLink href="/patient/profile" icon={<User className="h-4.5 w-4.5" />} label="Profile" />
+          <SidebarLink href="/patient/settings" icon={<Settings className="h-4.5 w-4.5" />} label="Settings" />
         </nav>
+
+        <form action={logout} className="mt-auto pt-6 border-t border-sidebar-border">
+          <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200">
+            <LogOut className="h-4.5 w-4.5" />
+            <span>Log Out</span>
+          </button>
+        </form>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8">
-        {children}
+      <main className="flex-1 p-8 bg-background overflow-y-auto">
+        <div className="max-w-6xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
+  )
+}
+
+function SidebarLink({ href, icon, label, active = false }: { href: string, icon: React.ReactNode, label: string, active?: boolean }) {
+  return (
+    <Link 
+      href={href} 
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+        active 
+          ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md shadow-sidebar-primary/20' 
+          : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+      }`}
+    >
+      {icon}
+      <span>{label}</span>
+    </Link>
   )
 }

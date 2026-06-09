@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/utils/supabase/server'
+import { Sparkles } from 'lucide-react'
 
 export async function Navbar() {
   const supabase = await createClient()
@@ -15,44 +16,47 @@ export async function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center mx-auto px-4">
+    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
+      <div className="container flex h-16 items-center mx-auto px-6">
         <div className="mr-4 flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <span className="font-bold text-2xl text-teal-700">SmileSync</span>
+          <Link href="/" className="mr-8 flex items-center space-x-2.5 group">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shadow-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30 transition-shadow">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-foreground">
+              Smile<span className="gradient-text">Sync</span>
+            </span>
           </Link>
-          <div className="hidden md:flex gap-6">
-            <Link href="/services" className="text-sm font-medium transition-colors hover:text-primary">
-              Services
+          <div className="hidden md:flex items-center gap-1">
+            <Link href="/#features" className="text-sm font-medium px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-200">
+              Features
             </Link>
-            <Link href="/dentists" className="text-sm font-medium transition-colors hover:text-primary">
-              Our Dentists
-            </Link>
-            <Link href="/about" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link href="/#about" className="text-sm font-medium px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-200">
               About
             </Link>
           </div>
         </div>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Search or other elements could go here */}
-          </div>
-          <nav className="flex items-center space-x-2">
-            {user ? (
-              <Button variant="default" className="bg-teal-600 hover:bg-teal-700">
-                <Link href={dashboardLink}>Dashboard</Link>
+        <div className="flex flex-1 items-center justify-end space-x-3">
+          {user ? (
+            <Link href={dashboardLink}>
+              <Button className="bg-gradient-to-r from-primary to-primary/85 hover:from-primary/90 hover:to-primary/75 text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 font-medium">
+                Dashboard
               </Button>
-            ) : (
-              <>
-                <Button variant="ghost">
-                  <Link href="/login">Login</Link>
+            </Link>
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="ghost" className="text-muted-foreground hover:text-foreground font-medium">
+                  Login
                 </Button>
-                <Button className="bg-teal-600 hover:bg-teal-700">
-                  <Link href="/login">Book Appointment</Link>
+              </Link>
+              <Link href="/login">
+                <Button className="bg-gradient-to-r from-primary to-primary/85 hover:from-primary/90 hover:to-primary/75 text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 font-medium">
+                  Get Started
                 </Button>
-              </>
-            )}
-          </nav>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
