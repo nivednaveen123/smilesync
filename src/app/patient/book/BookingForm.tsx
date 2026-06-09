@@ -54,7 +54,7 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="branch">Clinic Branch</Label>
-        <Select required value={branchId} onValueChange={setBranchId}>
+        <Select required value={branchId} onValueChange={(val) => setBranchId(val || '')}>
           <SelectTrigger>
             <SelectValue placeholder="Select a clinic location" />
           </SelectTrigger>
@@ -68,7 +68,7 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
 
       <div className="space-y-2">
         <Label htmlFor="dentist">Dentist</Label>
-        <Select required value={dentistId} onValueChange={setDentistId}>
+        <Select required value={dentistId} onValueChange={(val) => setDentistId(val || '')}>
           <SelectTrigger>
             <SelectValue placeholder="Select a dentist" />
           </SelectTrigger>
@@ -94,7 +94,7 @@ export default function BookingForm({ dentists, branches }: { dentists: any[], b
         </div>
         <div className="space-y-2">
           <Label htmlFor="time">Time</Label>
-          <Select required value={time} onValueChange={setTime}>
+          <Select required value={time} onValueChange={(val) => setTime(val || '')}>
             <SelectTrigger>
               <SelectValue placeholder="Select a time" />
             </SelectTrigger>
