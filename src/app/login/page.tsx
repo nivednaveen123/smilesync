@@ -1,9 +1,8 @@
-import { login, signup } from './actions'
+import { login } from './actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
   const params = await searchParams
@@ -18,58 +17,27 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login">
-              <form>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="m@example.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" name="password" type="password" required />
-                  </div>
-                  {params?.message && (
-                    <div className="text-sm font-medium text-destructive">{params.message}</div>
-                  )}
-                  <Button type="submit" formAction={login} className="w-full bg-teal-600 hover:bg-teal-700">
-                    Sign In
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-            
-            <TabsContent value="signup">
-              <form>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="full_name">Full Name</Label>
-                    <Input id="full_name" name="full_name" placeholder="John Doe" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input id="signup-email" name="email" type="email" placeholder="m@example.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input id="signup-password" name="password" type="password" required />
-                  </div>
-                  {params?.message && (
-                    <div className="text-sm font-medium text-destructive">{params.message}</div>
-                  )}
-                  <Button type="submit" formAction={signup} className="w-full bg-teal-600 hover:bg-teal-700">
-                    Create Account
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-          </Tabs>
+          <form>
+            <div className="space-y-4">
+              <div className="rounded-md bg-amber-50 p-3 text-sm text-amber-800 border border-amber-200">
+                Please use valid credentials so we can proceed with the inquiry.
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="identifier">Phone Number or Email</Label>
+                <Input id="identifier" name="identifier" type="text" placeholder="9876543210 or email@example.com" required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" name="password" type="password" required />
+              </div>
+              {params?.message && (
+                <div className="text-sm font-medium text-destructive">{params.message}</div>
+              )}
+              <Button type="submit" formAction={login} className="w-full bg-teal-600 hover:bg-teal-700">
+                Continue
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
     </div>
