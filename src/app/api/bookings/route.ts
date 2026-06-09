@@ -75,6 +75,18 @@ export async function POST(request: Request) {
       // Non-blocking error, we still return success to the patient
     }
 
+    // Format Email and Phone for users who signed in via Phone Number
+    let finalEmail = appointment.patient_profiles.email || ''
+    let finalPhone = appointment.patient_profiles.phone || ''
+
+    if (finalEmail.includes('@phone.smilesync.com')) {
+      // Extract the phone number (e.g. +911234567890@phone.smilesync.com -> +911234567890)
+      finalPhone = finalEmail.split('@')[0]
+      // Google Sheets treats values starting with '+' or '=' as formulas, causing #ERROR!
+      // To fix this, we prepend a single quote to force it as text, OR since they asked for text:
+      finalEmail = 'signed in using phone number'
+    }
+
     // Trigger Direct Google Sheets Webhook
     try {
       const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL
@@ -85,12 +97,12 @@ export async function POST(request: Request) {
           body: JSON.stringify({
             booking_reference: appointment.booking_reference,
             patient_name: patient_name || appointment.patient_profiles.full_name,
-            patient_age: patient_age || 'Not specified',
-            phone: appointment.patient_profiles.phone || '',
-            email: appointment.patient_profiles.email || '',
+            phone: finalPhone ? `'${finalPhone}` : '', // Prepend quote to stop Google Sheets from reading '+' as a formula
+            email: finalEmail,
             dentist: appointment.dentists.name,
             date: appointment.appointment_date,
-            time: appointment.appointment_time
+            time: appointment.appointment_time,
+            patient_age: patient_age || 'Not specified'
           })
         })
       }
